@@ -1,12 +1,14 @@
 //
-//   --- Library definieren: src\lib.rs ---
+//   --- Define mylib: src\lib.rs ---
 //
 
-// Deklariere (einbinden) die Module für die Bibliothek
-pub mod utilities;
-pub mod prefix;
+// 1. Define sublibraries/moduls
+pub mod mathematics {
+    // 2. bind submodules
+    pub mod prefix;
+    pub mod utilities;
+}
 
-
-// Veröffentlichung
-use crate::utilities::*;
-use crate::prefix::*;
+// Publication
+pub use crate::mathematics::utilities::*;
+pub use crate::mathematics::prefix::*;
