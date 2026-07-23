@@ -1,0 +1,12 @@
+[package]
+name = "astrology"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+astronomy = { path = "../astronomy" }
+dates = { path = "../dates" }
+# --- Abhängigkeiten für das Modul 'dates' ---
+chrono = "0.4.42"
+# --- Abhängigkeiten für das Untermodul 'dates::astrology' ---
+chrono-tz = "0.10.4"  # Ermöglicht IANA-Zeitzonen-Datenbanken (z. B. "Europe/Vienna")

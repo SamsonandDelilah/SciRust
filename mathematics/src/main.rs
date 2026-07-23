@@ -3,9 +3,9 @@
 //
 
 // Erforderliche Module importieren 
-use Library::utilities::*;
-use Library::prefix::SIPrefix;
-use play::SIPrefix::SIPrefix::*;          // Beispiel mit Zugriff auf exteren lib
+use mathematics::utilities::*;
+use mathematics::prefix::SIPrefix;
+//use play::SIPrefix::SIPrefix::*;          // Beispiel mit Zugriff auf exteren lib
 
 fn main() {
     println!("\n{}", "Hallo, code is running!\n");
@@ -14,11 +14,11 @@ fn main() {
     type_of(&vec![1.0, 2.0 , 3.0]);
 
     
-    println!("{}", Nano);
-    type_of(&Nano);
+    //println!("{}", Nano);
+    //type_of(&Nano);
 
-    let val = Kilo;
-    println!("Multiplier für {}: {}", val, val.multiplier());
+    //let val = Kilo;
+    //println!("Multiplier für {}: {}", val, val.multiplier());
  
     // Alle auflisten
     for i in SIPrefix::all() {

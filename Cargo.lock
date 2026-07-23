@@ -12,6 +12,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "astrology"
+version = "0.1.0"
+dependencies = [
+ "astronomy",
+ "chrono",
+ "chrono-tz",
+ "dates",
+]
+
+[[package]]
+name = "astronomy"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "vsop87",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -67,6 +86,13 @@ name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
+
+[[package]]
+name = "dates"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+]
 
 [[package]]
 name = "find-msvc-tools"
@@ -146,14 +172,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ceec5bc11778974d1bcb055b18002eba7f4b3518b6a0081b3af5f21666da9ad"
 
 [[package]]
-name = "mylib"
+name = "mathematics"
 version = "0.1.0"
-dependencies = [
- "chrono",
- "chrono-tz",
- "strum",
- "vsop87",
-]
 
 [[package]]
 name = "num-traits"
@@ -187,6 +207,10 @@ checksum = "06005508882fb681fd97892ecff4b7fd0fee13ef1aa569f8695dae7ab9099981"
 dependencies = [
  "siphasher",
 ]
+
+[[package]]
+name = "physics"
+version = "0.1.0"
 
 [[package]]
 name = "pin-project-lite"
@@ -235,12 +259,6 @@ name = "slab"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
-
-[[package]]
-name = "strum"
-version = "0.27.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af23d6f6c1a224baef9d3f61e287d2761385a5b88fdab4eb4c6f11aeb54c4bcf"
 
 [[package]]
 name = "syn"

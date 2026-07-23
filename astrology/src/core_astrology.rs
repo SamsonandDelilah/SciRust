@@ -1,5 +1,5 @@
 //
-// --- mylib/src/astrology/score_astrology.rs
+// --- mylib/astrology/score_astrology.rs
 //
 
 
@@ -24,8 +24,8 @@ pub fn sun_sign_today() -> &'static str {
 
 pub fn sun_sign_vsop87(year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32, timezone: &str) -> &'static str {
     // Greift pfadübergreifend direkt auf das neue, eigenständige Astronomie-Ordner-Modul zu
-    let jd = crate::astronomy::core_astronomy::julian_day_from_local(year, month, day, hour, min, sec, timezone);
-    let sun_lon = crate::astronomy::core_astronomy::sun_ecliptic_longitude(jd);
+    let jd = astronomy::core_astronomy::julian_day_from_local(year, month, day, hour, min, sec, timezone);
+    let sun_lon = astronomy::core_astronomy::sun_ecliptic_longitude(jd);
     
     let sign_idx = (sun_lon / 30.0) as usize % 12;
     ["Widder","Stier","Zwillinge","Krebs","Löwe","Jungfrau",

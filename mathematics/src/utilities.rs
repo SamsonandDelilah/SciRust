@@ -1,5 +1,5 @@
 //
-//   --- mylib\src\mathematics\utilities.rs als Library siehe lib.rs ---
+//   --- mylib\mathematics\utilities.rs als Library siehe lib.rs ---
 //
 
 // Erforderliche Einbindung 
