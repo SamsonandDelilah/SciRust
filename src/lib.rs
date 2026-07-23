@@ -4,11 +4,13 @@
 
 // 1. Define sublibraries/moduls
 pub mod mathematics;
+pub mod physics;
 pub mod dates;
 pub mod astrology;
 pub mod astronomy;
 
 // Publication
+
 pub use crate::mathematics::prefix::*;
 pub use crate::mathematics::utilities::*;
 

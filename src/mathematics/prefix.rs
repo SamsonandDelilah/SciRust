@@ -3,6 +3,7 @@
 //
 
 
+
 // 1. Enum der Prefix-Typen
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum PrefixType {

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-play = { path = "../play" }
+# --- play = { path = "../play" }
 strum = "0.27.2"
 # --- Abhängigkeiten für das Modul 'dates' ---
 chrono = "0.4.42"
