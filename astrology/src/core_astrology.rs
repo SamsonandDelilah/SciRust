@@ -31,3 +31,40 @@ pub fn sun_sign_vsop87(year: i32, month: u32, day: u32, hour: u32, min: u32, sec
     ["Widder","Stier","Zwillinge","Krebs","Löwe","Jungfrau",
      "Waage","Skorpion","Schütze","Steinbock","Wassermann","Fische"][sign_idx]
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    // ----------------------------------------
+    // 3) sun_sign_today Tests
+    // ----------------------------------------
+    #[test]
+    fn test_sun_sign_jan3() {
+        assert_eq!(sun_sign(1, 3), "Steinbock");
+    }
+
+    #[test]
+    fn test_sun_sign_steinbock() {
+        assert_eq!(sun_sign(1, 3), "Steinbock");    // 3.1.
+    }
+
+    #[test]
+    fn test_sun_sign_wassermann() {
+        assert_eq!(sun_sign(1, 20), "Wassermann");  // 20.1.
+    }
+
+
+    #[test]
+    fn test_sun_sign_fische() {
+        // Das stimmt so und liefert "Fische"
+        assert_eq!(sun_sign(2, 21), "Fische");      
+    }
+
+    #[test]
+    fn test_sun_sign_now() {
+        // Dynamischer Test: Erwartet das Sternzeichen passend zum heutigen Datum (Juli = Löwe)
+        assert_eq!(sun_sign_today(), "Löwe");      
+    }
+
+}

@@ -7,6 +7,6 @@ edition = "2024"
 astronomy = { path = "../astronomy" }
 dates = { path = "../dates" }
 # --- Abhängigkeiten für das Modul 'dates' ---
-chrono = "0.4.42"
+chrono = "0.4"
 # --- Abhängigkeiten für das Untermodul 'dates::astrology' ---
-chrono-tz = "0.10.4"  # Ermöglicht IANA-Zeitzonen-Datenbanken (z. B. "Europe/Vienna")
+chrono-tz = "0.10"  # Ermöglicht IANA-Zeitzonen-Datenbanken (z. B. "Europe/Vienna")

@@ -1,9 +1,10 @@
 [workspace]
 members = [
+    "finance",
     "physics",
     "dates",
     "astronomy",
     "astrology",    
     "mathematics",
 ]
-resolver = "3"
+resolver = "3"  # Rust 2024 edition
