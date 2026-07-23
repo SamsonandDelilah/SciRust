@@ -1,10 +1,10 @@
 //
-//   --- src\utilities.rs als Library siehe lib.rs ---
+//   --- mylib\src\mathematics\utilities.rs als Library siehe lib.rs ---
 //
 
 // Erforderliche Einbindung 
 use std::any::type_name;        // für type_of...
-use std::fmt::Display;          // für print
+//use std::fmt::Display;          // für print
 
 //
 //   --- Definition fn type_of ---
