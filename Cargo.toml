@@ -1,0 +1,8 @@
+[package]
+name = "Library"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+play = { path = "../play" }
+strum = "0.27.2"
