@@ -1,0 +1,16 @@
+[package]
+name = "integral"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rayon = "1.10"
+num-traits = "0.2" # Ermöglicht plattformunabhängige, generische Mathematik
+quadrature = { version = "0.1", optional = true }
+
+
+[features]
+default = []
+use_quadrature = ["dep:quadrature"]
+
+full = ["use_quadrature"]

@@ -1,0 +1,8 @@
+[package]
+name = "bench_app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Ihr eigenes Framework aus dem Workspace laden (inkl. aller Solver)
+integral = { path = "../mathematics/numerics/integral", features = ["full"] }

@@ -1,0 +1,8 @@
+[package]
+name = "bench_app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Wir laden das Crate explizit als Namen 'integral' in diese App
+integral = { package = "integral", path = "../mathematics/numerics/integral", features = ["full"] }

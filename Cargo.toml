@@ -1,10 +1,14 @@
 [workspace]
 members = [
-    "finance",
-    "physics",
-    "dates",
+    "astrology", 
     "astronomy",
-    "astrology",    
+    "bench_app",
+    "dates",
+    "finance",
     "mathematics",
+    "mathematics/numerics/integral",
+    "mathematics/numerics/roots",
+    "physics/thermodynamics",
+
 ]
-resolver = "3"  # Rust 2024 edition
+resolver = "2"  # Rust 2024 edition
