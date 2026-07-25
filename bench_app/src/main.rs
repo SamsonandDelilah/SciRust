@@ -1,4 +1,5 @@
 use integral::{integrate_with_strategy, integrate_vectors, SolverStrategy, IntegrationResult};
+use differentiation::{differentiate_with_strategy, DifferentiationStrategy, DifferentiationResult};
 use std::time::Instant;
 
 fn main() {
@@ -73,4 +74,23 @@ fn main() {
         println!("Gewählte Engine:  {}", method);
     }
     println!("=====================================================================");
+
+    // Beispiel: Ableitung von f(x) = x^3 bei x = 2.0 (Analytisch: 3*x^2 = 12.0)
+    let f = |x: f64| x.powi(3);
+    
+    let res = differentiate_with_strategy(
+        f, 
+        2.0, 
+        DifferentiationStrategy::HighOrder5, 
+        None
+    );
+
+    match res {
+        DifferentiationResult::Ok { value, error_estimate, method } => {
+            println!("Ergebnis: {} (Methode: {}, Fehler: {})", value, method, error_estimate);
+        }
+        DifferentiationResult::Err { reason } => {
+            println!("Fehler: {}", reason);
+        }
+    }
 }

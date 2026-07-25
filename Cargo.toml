@@ -7,8 +7,10 @@ members = [
     "finance",
     "mathematics",
     "mathematics/numerics/integral",
+    "mathematics/numerics/differentiation",
+    "mathematics/numerics/polynomials",
     "mathematics/numerics/roots",
     "physics/thermodynamics",
-
+    "utilities/core_simd",
 ]
 resolver = "2"  # Rust 2024 edition

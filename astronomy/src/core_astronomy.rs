@@ -1,5 +1,5 @@
 //
-// --- mylib/astronomy/core_astronomy.rs
+// --- astronomy/core_astronomy.rs
 //
 
 use vsop87::vsop87e;
@@ -11,12 +11,12 @@ pub fn julian_day_from_local(year: i32, month: u32, day: u32, hour: u32, min: u3
     
     let a = (yy / 100.0).floor();
     let mut b = 0.0;
-    // Korrektur für den Gregorianischen Kalender ab Oktober 1582
+    // correction for Gregorian calender since October 1582
     if y >= 1582.0 || (y == 1582.0 && m >= 10.0) || (y == 1582.0 && m == 10.0 && d >= 15.0) {
         b = 2.0 - a + (a / 4.0).floor(); // .floor() hier ist wichtig!
     }
     
-    // Hinzufügen von .floor() bei den beiden Brüchen
+    // correction with .floor() for ratios
     let jd = ((1461.0 / 4.0) * (yy + 4716.0)).floor() 
            + ((153.0 / 5.0) * (mm + 1.0)).floor() 
            + d + b - 1524.5;
@@ -33,7 +33,7 @@ pub fn sun_ecliptic_longitude(jd: f64) -> f64 {
 
 
 // ------------------------------------------------------------
-// Unit Tests für Astronomie
+// Unit Tests for  Astronomy
 // ------------------------------------------------------------
 #[cfg(test)]
 mod tests {
@@ -41,10 +41,10 @@ mod tests {
 
     #[test]
     fn test_julian_day_j2000_delta() {
-        // Epoche J2000.0: 1. Januar 2000 um 12:00 Uhr Mittag
+        // Epoche J2000.0: 1. Januar 2000 at 12:00 Uhr noon
         let jd = julian_day_from_local(2000, 1, 1, 12, 0, 0, "UTC");
         
-        // Theorie-Erwartungswert ist 2451545.0
+        // theoretical expected result is 2451545.0
         let theoretisch = 2451545.0;
         
         // Wir prüfen, ob dein Algorithmus den Tag innerhalb einer sicheren Toleranz von 2 Tagen trifft.
@@ -55,7 +55,7 @@ mod tests {
 
     #[test]
     fn test_julian_day_midnight_delta() {
-        // 1. Januar 2000 um 00:00 Uhr Mitternacht (ein halber Tag vor J2000.0)
+        // 1. January 2000 at  00:00 hr midnight (half day before J2000.0)
         let jd = julian_day_from_local(2000, 1, 1, 0, 0, 0, "UTC");
         
         let theoretisch = 2451544.5;
@@ -65,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_sun_ecliptic_longitude_boundaries() {
-        // Ein julianisches Datum generieren
+        // generate Julian date
         let jd = julian_day_from_local(2026, 7, 23, 12, 0, 0, "Europe/Vienna");
         let longitude = sun_ecliptic_longitude(jd);
         

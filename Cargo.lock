@@ -40,6 +40,7 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 name = "bench_app"
 version = "0.1.0"
 dependencies = [
+ "differentiation",
  "integral",
 ]
 
@@ -95,6 +96,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 
 [[package]]
+name = "core_simd"
+version = "0.1.0"
+
+[[package]]
 name = "crossbeam-deque"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -124,6 +129,14 @@ name = "dates"
 version = "0.1.0"
 dependencies = [
  "chrono",
+]
+
+[[package]]
+name = "differentiation"
+version = "0.1.0"
+dependencies = [
+ "num-complex",
+ "num-traits",
 ]
 
 [[package]]
@@ -227,6 +240,15 @@ name = "mathematics"
 version = "0.1.0"
 
 [[package]]
+name = "num-complex"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73f88a1307638156682bada9d7604135552957b7818057dcef22705b4d509495"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -264,6 +286,14 @@ name = "pin-project-lite"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
+
+[[package]]
+name = "polynomials"
+version = "0.1.0"
+dependencies = [
+ "core_simd",
+ "num-traits",
+]
 
 [[package]]
 name = "proc-macro2"

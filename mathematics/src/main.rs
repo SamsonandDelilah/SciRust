@@ -8,7 +8,7 @@ use mathematics::prefix::SIPrefix;
 //use play::SIPrefix::SIPrefix::*;          // Beispiel mit Zugriff auf exteren lib
 
 fn main() {
-    println!("\n{}", "Hallo, code is running!\n");
+    println!("\nHallo, code is running!\n");
 
     type_of(&34);
     type_of(&vec![1.0, 2.0 , 3.0]);
@@ -40,5 +40,5 @@ fn main() {
     }
 
     // end 
-    println!("\n{}", "End of code!\n");
+    println!("\nEnd of code!\n");
 }

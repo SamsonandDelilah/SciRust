@@ -194,7 +194,7 @@ where
     // Erste Zeile initialisieren (Trapezregel mit 1 Intervall)
     r[0][0] = trapezoidal_integral(f, a, b, 1);
     
-    let two = T::from_f64(2.0).unwrap();
+    //let two = T::from_f64(2.0).unwrap();
     
     for i in 1..max_steps {
         // Schrittweise Verdopplung der Intervalle
@@ -243,11 +243,12 @@ where
         let two = T::from_f64(2.0).unwrap();
         let four = T::from_f64(4.0).unwrap();
 
-        for i in 1..n {
+        // Clippy-konforme Schleife über Iterator mit Index
+        for (i, &y_val) in y.iter().enumerate().skip(1).take(n - 1) {
             if i % 2 == 1 {
-                sum = sum + four * y[i];
+                sum = sum + four * y_val;
             } else {
-                sum = sum + two * y[i];
+                sum = sum + two * y_val;
             }
         }
         Ok((h / T::from_f64(3.0).unwrap()) * sum)

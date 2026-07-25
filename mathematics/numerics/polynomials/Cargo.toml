@@ -1,0 +1,8 @@
+[package]
+name = "polynomials"    # crate name
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+core_simd = { path = "../../../utilities/core_simd" }  # crate name des pakets core_simd
+num-traits = "0.2"
