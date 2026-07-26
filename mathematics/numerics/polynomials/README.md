@@ -42,6 +42,9 @@ fn main() {
     println!("Direct Chebyshev result: {}", result_chebyshev);
 }
 
+```
+---
+
 ## Todo / In Progress
 
 * **Estrin's Scheme (`EvaluationStrategy::Estrin`):**
@@ -50,6 +53,8 @@ fn main() {
 
 * **Lagrange Interpolation:**
 * Planned support for constructing polynomials directly from a set of interpolation nodes.
+
+---
 
 ## Roadmap & Outlook
 
