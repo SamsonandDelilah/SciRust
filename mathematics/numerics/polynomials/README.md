@@ -48,11 +48,11 @@ fn main() {
 ## Todo / In Progress
 
 * **Estrin's Scheme (`EvaluationStrategy::Estrin`):**
-* Designed to maximize parallel instruction-level execution, currently prepared in the architecture but temporarily disabled in the dispatch enum pending final integration.
+* **Designed to maximize parallel instruction-level execution, currently prepared in the architecture but temporarily disabled in the dispatch enum pending final integration.
 
 
 * **Lagrange Interpolation:**
-* Planned support for constructing polynomials directly from a set of interpolation nodes.
+* **Planned support for constructing polynomials directly from a set of interpolation nodes.
 
 ---
 
