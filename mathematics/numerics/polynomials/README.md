@@ -22,7 +22,7 @@ A highly optimized Rust library for efficient polynomial computation, numerical 
 ## Usage Examples
 
 ```rust
-use mathematics::numeric::polynomials::{Polynomial, evaluate_horner, evaluate_chebyshev}; // Pfad je nach Projektstruktur anpassen
+use mathematics::numerics::polynomials::{Polynomial, evaluate_horner, evaluate_chebyshev}; // Pfad je nach Projektstruktur anpassen
 
 fn main() {
     // 1. Using the Polynomial struct with Horner's scheme
