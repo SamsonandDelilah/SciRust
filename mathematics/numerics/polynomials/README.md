@@ -47,17 +47,16 @@ fn main() {
 
 ## Todo / In Progress
 
-* **Estrin's Scheme (`EvaluationStrategy::Estrin`):**
-* **Designed to maximize parallel instruction-level execution, currently prepared in the architecture but temporarily disabled in the dispatch enum pending final integration.
+* **Estrin's Scheme (`EvaluationStrategy::Estrin`):** Designed to maximize parallel instruction-level execution, currently prepared in the architecture but temporarily disabled in the dispatch enum pending final integration.
 
-
-* **Lagrange Interpolation:**
-* **Planned support for constructing polynomials directly from a set of interpolation nodes.
+* **Lagrange Interpolation:** Planned support for constructing polynomials directly from a set of interpolation nodes.
 
 ---
 
 ## Roadmap & Outlook
 
 * **AVX-512 Implementation:** Completing the full SIMD architecture within `polynomials` to leverage 512-bit register widths (16-wide for `f32` and 8-wide for `f64`) with advanced mask handling for arbitrary degrees.
+  
 * **GPU Acceleration:** Offloading intensive numerical loops to graphics processing units for massively parallel scientific computations.
+  
 * **Advanced Numerical Methods:** Integration of automatic error bounding and support for additional polynomial bases (e.g., Legendre polynomials).
