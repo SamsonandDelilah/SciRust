@@ -1,28 +1,50 @@
 //! Mathematische Algorithmen für Polynome (Horner, Estrin, Ableitung).
 #[cfg(target_arch = "x86_64")]
-use core::arch::x86_64::*;
+//use core::arch::x86_64::*;
 use core_simd::{get_optimal_simd_level, SimdLevel};
 use num_traits::{Float, FromPrimitive};
 
 /// Ein Trait, das die hardwarenahe Auswertung kapselt
 pub trait SimdEvaluator: Float + FromPrimitive {
+    // 1. Standard Horner / Potenzreihen
     fn evaluate_accelerated(coefficients: &[Self], x: Self) -> Self;
+    
+    // 2. Chebyshev-Polynome
+    fn evaluate_chebyshev(coefficients: &[Self], x: Self) -> Self;
+    
+ /*    
+    // 3. Hermite-Polynome
+    fn evaluate_hermite(coefficients: &[Self], x: Self) -> Self;
+*/
 }
 
-// Implementierung für f64 (mit echtem AVX2-Turbo)
 impl SimdEvaluator for f64 {
     #[inline]
     fn evaluate_accelerated(coefficients: &[Self], x: Self) -> Self {
         match get_optimal_simd_level() {
-            SimdLevel::Avx512 | SimdLevel::Avx2 => {
-                unsafe { evaluate_horner_avx2_f64(coefficients, x) }
-            }
-            SimdLevel::Scalar => {
-                evaluate_horner(coefficients, x)
-            }
+            SimdLevel::Avx512 | SimdLevel::Avx2 => unsafe { evaluate_horner_avx2_f64(coefficients, x) },
+            SimdLevel::Scalar => evaluate_horner(coefficients, x),
         }
     }
+
+    #[inline]
+    fn evaluate_chebyshev(coefficients: &[Self], x: Self) -> Self {
+        match get_optimal_simd_level() {
+            //SimdLevel::Avx512 | SimdLevel::Avx2 => unsafe { evaluate_chebyshev_avx2_f64(coefficients, x) },
+            SimdLevel::Scalar => evaluate_chebyshev(coefficients, x),
+            _ => { evaluate_chebyshev(coefficients, x) }
+        }
+    }
+/*
+    #[inline]
+    fn evaluate_hermite(coefficients: &[Self], x: Self) -> Self {
+        match get_optimal_simd_level() {
+            SimdLevel::Avx512 | SimdLevel::Avx2 => unsafe { evaluate_hermite_avx2_f64(coefficients, x) },
+            SimdLevel::Scalar => evaluate_hermite_scalar(coefficients, x),
+        }
+        */
 }
+
 
 // Implementierung für f32 (mit echtem AVX2-Turbo)
 impl SimdEvaluator for f32 {
@@ -32,9 +54,18 @@ impl SimdEvaluator for f32 {
             SimdLevel::Avx512 | SimdLevel::Avx2 => {
                 unsafe { evaluate_horner_avx2_f32(coefficients, x) }
             }
-            SimdLevel::Scalar => {
-                evaluate_horner(coefficients, x)
+            SimdLevel::Scalar => evaluate_horner(coefficients, x)
+        }
+    }
+
+    #[inline]
+    fn evaluate_chebyshev(coefficients: &[Self], x: Self) -> Self {
+        match get_optimal_simd_level() {
+            SimdLevel::Avx512 | SimdLevel::Avx2 => {
+                // TODO: Später durch AVX2-Implementierung für Chebyshev ersetzen
+                evaluate_chebyshev(coefficients, x)
             }
+            SimdLevel::Scalar => evaluate_chebyshev(coefficients, x)
         }
     }
 }
@@ -47,97 +78,108 @@ where
     T: Float + FromPrimitive,
 {
     let mut result = T::zero();
-    let mut iter = coefficients.iter().rev();
-    if let Some(&c) = iter.next() {
-        result = c;
-        for &c in iter {
-            result = result * x + c;
-        }
+    // Startet beim höchsten Grad c_n und läuft absteigend bis c_0
+    for &c in coefficients.iter().rev() {
+        result = result * x + c;
     }
     result
 }
 
-/// AVX2-optimiertes Horner-Schema für f64
-/// # Safety
+/// AVX2-optimiertes Horner-Schema für f64 (Clippy- und Rust 2024-konform)
+/// # Safety 
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx2,fma")]
 pub unsafe fn evaluate_horner_avx2_f64(coefficients: &[f64], x: f64) -> f64 {
-    if coefficients.is_empty() {
-        return 0.0;
-    }
+    use std::arch::x86_64::*;
 
     let n = coefficients.len();
-    let mut acc =  _mm256_setzero_pd();
-    let vx =  _mm256_set1_pd(x);
+    if n == 0 {
+        return 0.0;
+    }
+    if n < 4 {
+        return evaluate_horner(coefficients, x);
+    }
 
-    let chunk_size = 4;
-    let mut i = 0;
+    let mut i = n;
+    let mut result = 0.0;
 
-    while i + chunk_size <= n {
-        // Hier das unsafe für das Laden und FMA ergänzen:
+    // 1. Skalarer Rest vom Ende her, bis die Anzahl durch 4 teilbar ist
+    while !i.is_multiple_of(4) {
+        i -= 1;
+        result = result * x + coefficients[i];
+    }
+
+    // 2. AVX2 4er-Blöcke
+    let vx4 = _mm256_set1_pd(x.powi(4));
+    let mut acc = _mm256_setzero_pd();
+
+    while i >= 4 {
+        i -= 4;
+        // Sicherheits-Block für rohe Pointer-Operationen (Clippy-konform explizit gekapselt)
         let c_chunk = unsafe { _mm256_loadu_pd(coefficients.as_ptr().add(i)) };
-        acc = _mm256_fmadd_pd(acc, vx, c_chunk);
-        
-        i += chunk_size;
+        acc = _mm256_fmadd_pd(acc, vx4, c_chunk);
     }
 
     let mut temp = [0.0; 4];
-    unsafe { _mm256_storeu_pd(temp.as_mut_ptr(), acc); }
-    
-    let mut result = temp[0] * x.powi(3) + temp[1] * x.powi(2) + temp[2] * x + temp[3];
-
-    while i < n {
-        result = result * x + coefficients[i];
-        i += 1;
+    unsafe {
+        _mm256_storeu_pd(temp.as_mut_ptr(), acc);
     }
 
+    let mut vec_res = 0.0;
+    for j in (0..4).rev() {
+        vec_res = vec_res * x + temp[j];
+    }
+
+    result = result * x.powi(i as i32) + vec_res;
     result
 }
 
-
-/// AVX2-optimiertes Horner-Schema für f32
+/// AVX2-optimiertes Horner-Schema für f32 (Clippy- und Rust 2024-konform)
 /// # Safety
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx2,fma")]
 pub unsafe fn evaluate_horner_avx2_f32(coefficients: &[f32], x: f32) -> f32 {
-    if coefficients.is_empty() {
-        return 0.0;
-    }
+    use std::arch::x86_64::*;
 
     let n = coefficients.len();
-    let mut acc = _mm256_setzero_ps();
-    let vx = _mm256_set1_ps(x);
-
-    // Wir verarbeiten 8 Koeffizienten gleichzeitig im 256-Bit Vektor (f32)
-    let chunk_size = 8;
-    let mut i = 0;
-
-    while i + chunk_size <= n {
-        // Lade 8 Koeffizienten unaligned in ein YMM-Register
-        let c_chunk= unsafe { _mm256_loadu_ps(coefficients.as_ptr().add(i)) };
-        
-        // Horner-Schritt mit FMA für f32
-        acc = _mm256_fmadd_ps(acc, vx, c_chunk);
-        
-        i += chunk_size;
+    if n == 0 {
+        return 0.0;
+    }
+    if n < 8 {
+        return evaluate_horner(coefficients, x);
     }
 
-    // Extrahiere die 8 Werte aus dem Vektor und summiere sie skalar auf
-    let mut temp = [0.0f32; 8];
-    unsafe { _mm256_storeu_ps(temp.as_mut_ptr(), acc); }
-    
-    // Horner-Auswertung über die akkumulierten Vektorelemente
+    let mut i = n;
     let mut result = 0.0f32;
-    for &val in &temp {
-        result = result * x.powi(8) + val; // Korrekte Skalierung für den 8er-Block
-    }
 
-    // Rest-Koeffizienten (falls n nicht durch 8 teilbar ist) skalar verarbeiten
-    while i < n {
+    // 1. Skalarer Rest vom Ende her, bis die Anzahl durch 8 teilbar ist
+    while !i.is_multiple_of(8) {
+        i -= 1;
         result = result * x + coefficients[i];
-        i += 1;
     }
 
+    // 2. AVX2 8er-Blöcke
+    let vx8 = _mm256_set1_ps(x.powi(8));
+    let mut acc = _mm256_setzero_ps();
+
+    while i >= 8 {
+        i -= 8;
+        // Sicherheits-Block für rohe Pointer-Operationen (Clippy-konform explizit gekapselt)
+        let c_chunk = unsafe { _mm256_loadu_ps(coefficients.as_ptr().add(i)) };
+        acc = _mm256_fmadd_ps(acc, vx8, c_chunk);
+    }
+
+    let mut temp = [0.0f32; 8];
+    unsafe {
+        _mm256_storeu_ps(temp.as_mut_ptr(), acc);
+    }
+
+    let mut vec_res = 0.0f32;
+    for j in (0..8).rev() {
+        vec_res = vec_res * x + temp[j];
+    }
+
+    result = result * x.powi(i as i32) + vec_res;
     result
 }
 
@@ -218,6 +260,41 @@ where
     derived
 }
 
+//
+//  --- Chebychev with Clenshaw algorithm ---
+//
+/// Wertet eine Chebyshev-Reihe an der Stelle x mittels des Clenshaw-Algorithmus aus.
+/// (Skalare Basis-Implementierung)
+#[inline]
+pub fn evaluate_chebyshev<T>(coefficients: &[T], x: T) -> T
+where
+    T: num_traits::Float + num_traits::FromPrimitive,
+{
+    if coefficients.is_empty() {
+        return T::zero();
+    }
+    if coefficients.len() == 1 {
+        return coefficients[0];
+    }
+
+    let two = T::from_f64(2.0).unwrap();
+    let mut d_next_2 = T::zero(); // entspricht d_{k+2}
+    let mut d_next_1 = T::zero(); // entspricht d_{k+1}
+
+    // Clenshaw-Rekursion läuft rückwärts vom letzten Koeffizienten bis k = 1
+    for &c in coefficients.iter().skip(1).rev() {
+        let d_current = c + (x * two * d_next_1) - d_next_2;
+        d_next_2 = d_next_1;
+        d_next_1 = d_current;
+    }
+
+    // Endergebnis für Clenshaw: c_0 + x * d_1 - d_2
+    coefficients[0] + (x * d_next_1) - d_next_2
+}
+
+//
+//  --- unit tests ---
+//
 
 #[cfg(test)]
 mod tests {

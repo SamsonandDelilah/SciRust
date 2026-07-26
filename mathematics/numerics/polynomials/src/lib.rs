@@ -10,7 +10,8 @@ use num_traits::{Float, FromPrimitive};
 pub enum EvaluationStrategy {
     #[default]
     Horner,
-    Estrin,
+    //Estrin,
+    Chebychev,
 }
 
 /// Ein Polynom in Koeffizientendarstellung: p(x) = c[0] + c[1]*x + c[2]*x^2 + ... + c[n]*x^n
@@ -45,7 +46,9 @@ pub fn evaluate_with_strategy(&self, x: T, strategy: EvaluationStrategy) -> T
             // Richtig: Aufruf über T statt über das methods-Modul!
             EvaluationStrategy::Horner => T::evaluate_accelerated(&self.coefficients, x),
             // Falls Estrin noch separat läuft oder auch ins Trait soll:
-            EvaluationStrategy::Estrin => methods::evaluate_estrin(&self.coefficients, x),
+            //EvaluationStrategy::Estrin => methods::evaluate_estrin(&self.coefficients, x),
+            // Chebychev with Clenshaw polynom:
+            EvaluationStrategy::Chebychev => T::evaluate_chebyshev(&self.coefficients, x),
         }
     }
 
@@ -61,6 +64,11 @@ pub fn evaluate_with_strategy(&self, x: T, strategy: EvaluationStrategy) -> T
         }
     }
 }
+
+
+//
+//  --- unit tests ---
+//
 
 #[cfg(test)]
 mod tests {
@@ -79,10 +87,10 @@ mod tests {
             poly.evaluate_with_strategy(2.0, EvaluationStrategy::Horner),
             17.0
         );
-        assert_eq!(
-            poly.evaluate_with_strategy(2.0, EvaluationStrategy::Estrin),
-            17.0
-        );
+        //assert_eq!(
+        //    poly.evaluate_with_strategy(2.0, EvaluationStrategy::Estrin),
+        //    17.0
+        //);
     }
 
     #[test]
@@ -104,4 +112,34 @@ mod tests {
         assert_eq!(val, 17.0);
         assert_eq!(deriv, 14.0); // p'(x) = 2 + 6x => p'(2) = 14
     }
+
+// Eine kleine Hilfsfunktion zum Vergleichen von Gleitkommazahlen mit Toleranz
+    fn approx_eq(a: f64, b: f64, eps: f64) -> bool {
+        (a - b).abs() < eps
+    }
+
+    #[test]
+    fn test_chebyshev_evaluation() {
+        // Beispiel: T_0(x) = 1, T_1(x) = x, T_2(x) = 2x^2 - 1
+        // Koeffizienten: c = [1.0, 0.0, 1.0] bedeutet: 1*T_0 + 0*T_1 + 1*T_2
+        // Bei x = 0.5: T_0(0.5) = 1.0, T_2(0.5) = 2*(0.5)^2 - 1 = 2*0.25 - 1 = -0.5
+        // Erwartetes Ergebnis: 1.0 + (-0.5) = 0.5
+        let poly = Polynomial::new(vec![1.0, 0.0, 1.0]);
+        let result = poly.evaluate_with_strategy(0.5, EvaluationStrategy::Chebychev);
+        
+        assert!(approx_eq(result, 0.5, 1e-10), "Erwartet 0.5, erhalten {}", result);
+    }
+
+    #[test]
+    fn test_strategy_dispatch() {
+        let poly = Polynomial::new(vec![1.0, 2.0, 3.0]);
+        
+        // Prüfen, ob die Strategien ohne Panics durchlaufen
+        let res_horner = poly.evaluate_with_strategy(0.5, EvaluationStrategy::Horner);
+        let res_cheby = poly.evaluate_with_strategy(0.5, EvaluationStrategy::Chebychev);
+        
+        // Horner rechnet Potenzreihe, Chebychev Chebyshev-Reihe – die Ergebnisse müssen sich unterscheiden
+        assert_ne!(res_horner, res_cheby);
+    }
+
 }
