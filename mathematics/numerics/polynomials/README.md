@@ -1,6 +1,6 @@
 # Polynomials Library
 
-A highly optimized Rust library for efficient polynomial computation, numerical evaluation, and symbolic manipulation, supporting both scalar and hardware-accelerated SIMD (AVX2/FMA) execution paths.
+A highly optimized Rust library for efficient polynomial computation, numerical evaluation, and symbolic manipulation, supporting both scalar and hardware-accelerated SIMD (AVX2/FMA, not yet AVX512) execution paths.
 
 ---
 
