@@ -1,0 +1,38 @@
+# 01. Define workflow name
+name: Deploy Documentation
+
+# 02. Trigger workflow on push to main branch
+on:
+  push:
+    branches: [ "main" ]
+
+# 03. Set permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: id-token
+  deployments: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build documentation with Cargo
+        run: cargo doc --no-deps --document-private-items
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: target/doc
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
