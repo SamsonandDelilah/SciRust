@@ -1,10 +1,10 @@
-//! Mathematische Algorithmen für Polynome (Horner, Estrin, Ableitung).
-#[cfg(target_arch = "x86_64")]
-//use core::arch::x86_64::*;
+//! Mathematical algorithm for polynoms (Horner, Estrin, Differentiation).
+//! #[cfg(target_arch = "x86_64")]
+use core::arch::x86_64::*;
 use core_simd::{get_optimal_simd_level, SimdLevel};
 use num_traits::{Float, FromPrimitive};
 
-/// Ein Trait, das die hardwarenahe Auswertung kapselt
+/// Trait respective Hardware selection
 pub trait SimdEvaluator: Float + FromPrimitive {
     // 1. Standard Horner / Potenzreihen
     fn evaluate_accelerated(coefficients: &[Self], x: Self) -> Self;
@@ -13,7 +13,7 @@ pub trait SimdEvaluator: Float + FromPrimitive {
     fn evaluate_chebyshev(coefficients: &[Self], x: Self) -> Self;
     
  /*    
-    // 3. Hermite-Polynome
+    // Hermite polynome (not yet implemented)
     fn evaluate_hermite(coefficients: &[Self], x: Self) -> Self;
 */
 }
@@ -46,7 +46,7 @@ impl SimdEvaluator for f64 {
 }
 
 
-// Implementierung für f32 (mit echtem AVX2-Turbo)
+/// f32 implementation with AVX2 (not yet AVX512)
 impl SimdEvaluator for f32 {
     #[inline]
     fn evaluate_accelerated(coefficients: &[Self], x: Self) -> Self {
@@ -71,7 +71,7 @@ impl SimdEvaluator for f32 {
 }
 
 
-/// Klassisches Horner-Schema (O(n) Operationen, optimal für serielle Ausführung)
+/// Classic Horner schema (O(n) operations, optimal für serial processing)
 #[inline]
 pub fn evaluate_horner<T>(coefficients: &[T], x: T) -> T
 where
@@ -85,7 +85,7 @@ where
     result
 }
 
-/// AVX2-optimiertes Horner-Schema für f64 (Clippy- und Rust 2024-konform)
+/// AVX2-optimized Horner schema for f64
 /// # Safety 
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx2,fma")]
@@ -109,7 +109,7 @@ pub unsafe fn evaluate_horner_avx2_f64(coefficients: &[f64], x: f64) -> f64 {
         result = result * x + coefficients[i];
     }
 
-    // 2. AVX2 4er-Blöcke
+    // 2. AVX2 for 4 blocks
     let vx4 = _mm256_set1_pd(x.powi(4));
     let mut acc = _mm256_setzero_pd();
 
@@ -134,7 +134,7 @@ pub unsafe fn evaluate_horner_avx2_f64(coefficients: &[f64], x: f64) -> f64 {
     result
 }
 
-/// AVX2-optimiertes Horner-Schema für f32 (Clippy- und Rust 2024-konform)
+/// AVX2-optimiertized Horner schema for f32
 /// # Safety
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx2,fma")]
@@ -184,7 +184,7 @@ pub unsafe fn evaluate_horner_avx2_f32(coefficients: &[f32], x: f32) -> f32 {
 }
 
 
-/// Estrins Schema (Gruppierung zur besseren Ausnutzung von Instruction-Level Parallelism)
+/// Estrins Scheme (Grouping for optimal processin gof Instruction-Level Parallelism)
 pub fn evaluate_estrin<T>(coefficients: &[T], x: T) -> T
 where
     T: Float + FromPrimitive,
@@ -222,7 +222,7 @@ where
     acc
 }
 
-/// Horner-Schema mit simultaner Ableitung
+/// Horner schema mit simultanious differentiatation
 pub fn evaluate_with_derivative<T>(coefficients: &[T], x: T) -> (T, T)
 where
     T: Float + FromPrimitive,
@@ -243,7 +243,7 @@ where
     (p, dp)
 }
 
-/// Formale Ableitung der Koeffizienten
+/// Formal Differentiation of coefficients
 pub fn differentiate_coefficients<T>(coefficients: &[T]) -> Vec<T>
 where
     T: Float + FromPrimitive,
@@ -263,8 +263,8 @@ where
 //
 //  --- Chebychev with Clenshaw algorithm ---
 //
-/// Wertet eine Chebyshev-Reihe an der Stelle x mittels des Clenshaw-Algorithmus aus.
-/// (Skalare Basis-Implementierung)
+/// Using Clenshaw algorithm to evaluate Chebyshev series at x.
+/// (basic scalare implementation)
 #[inline]
 pub fn evaluate_chebyshev<T>(coefficients: &[T], x: T) -> T
 where
@@ -288,7 +288,7 @@ where
         d_next_1 = d_current;
     }
 
-    // Endergebnis für Clenshaw: c_0 + x * d_1 - d_2
+    // Rsult for  Clenshaw: c_0 + x * d_1 - d_2
     coefficients[0] + (x * d_next_1) - d_next_2
 }
 

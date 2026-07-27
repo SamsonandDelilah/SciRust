@@ -1,16 +1,27 @@
 [workspace]
 members = [
+    # IOs
+    "api",
+    "core_io",
+    "plot",
+    "wasm",
+
+    # Implementations
     "astrology", 
     "astronomy",
     "bench_app",
     "dates",
     "finance",
+
     "mathematics",
+    "mathematics/numerics/differentiation",    
     "mathematics/numerics/integral",
-    "mathematics/numerics/differentiation",
+    "mathematics/geometry",
     "mathematics/numerics/polynomials",
     "mathematics/numerics/roots",
+    "physics/optics",
     "physics/thermodynamics",
     "utilities/core_simd",
+    "symbolic",
 ]
 resolver = "2"  # Rust 2024 edition

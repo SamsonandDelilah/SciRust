@@ -1,0 +1,7 @@
+[package]
+name = "geometry"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Add workspace dependencies or external numerical crates here if needed
