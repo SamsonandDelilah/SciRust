@@ -31,7 +31,7 @@ jobs:
                   echo '<h1>SciRust Documentation Workspace</h1><ul>' >> target/doc/index.html
                   for d in target/doc/*/; do
                     dir_name=$(basename "$d")
-                    if [ "$dir_name" != "static.files" ]; then
+                    if [ "$dir_name" != "static.files" ] && [ "$dir_name" != "src" ] && [ "$dir_name" != "search.index" ]; then
                       echo "<li><a href=\"$dir_name/index.html\">$dir_name</a></li>" >> target/doc/index.html
                     fi
                   done
