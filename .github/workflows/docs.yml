@@ -9,8 +9,8 @@ on:
 # 03. Set permissions for GitHub Pages deployment
 permissions:
   contents: read
-  pages: id-token
-  deployments: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
