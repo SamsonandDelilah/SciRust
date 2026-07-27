@@ -24,6 +24,7 @@ jobs:
 
       - name: Build documentation with Cargo
         run: cargo doc --no-deps --document-private-items
+        echo '<meta http-equiv="refresh" content="0; url=scirust/target/index.html">' > target/doc/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
