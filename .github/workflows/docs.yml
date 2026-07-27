@@ -26,8 +26,15 @@ jobs:
         run: cargo doc --workspace --no-deps --document-private-items
 
       - name: Create redirect index.html
-        run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=target/index.html"></head><body></body></html>' > target/doc/index.html
-
+        run: |
+                  echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>SciRust Documentation</title></head><body>' > target/doc/index.html
+                  echo '<h1>SciRust Documentation Workspace</h1><ul>' >> target/doc/index.html
+                  foreach ($dir in Get-ChildItem -Path "target/doc" -Directory) { 
+                      if ($dir.Name -ne "static.files") {
+                          echo "<li><a href=`"$($dir.Name)/index.html`">$($dir.Name)</a></li>" >> target/doc/index.html
+                      }
+                  }
+                  echo '</ul></body></html>' >> target/doc/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
