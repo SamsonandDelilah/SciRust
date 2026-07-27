@@ -1,0 +1,17 @@
+PDF Document Title: Planck Radiation Engineering Report
+Author: SciRust Optics Module
+Dimensions: 210x297mm
+
+Content:
+# Ingenieursreport: Plancksche Strahlungsverteilung
+Datum: 2026-07-27
+
+## 1. Spezifikation & Eingangsgrößen (Inputs)
+- **Spektraler Bereich (Lambda):** 300.00 nm bis 800.00 nm
+- **Temperatur des Schwarzen Körpers (T):** 5778.00 K
+
+## 2. Berechnete Ausgangsgrößen (Outputs)
+- **Integrierte Spektrale Strahlungsdichte (GK15):** 1.107694e7 $\text{W} \cdot \text{m}^{-2} \cdot \text{sr}^{-1}$
+- **Geschätzter Integrationsfehler:** 3.687162e-1
+- **Emissionsmaximum ($\lambda_{\max}$):** 501.5182 nm (5.015182e-7 m)
+- **Maximale Spektrale Strahlungsdichte:** 2.637626e13 $\text{W} \cdot \text{m}^{-2} \cdot \text{sr}^{-1} \cdot \text{m}^{-1}$

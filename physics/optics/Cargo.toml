@@ -1,0 +1,18 @@
+[package]
+name = "optics"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "optics"
+path = "src/mod.rs"
+
+[[bin]]
+name = "optics"
+path = "src/main.rs"
+
+[dependencies]
+num-traits = "0.2"
+# KORREKTUR: Zwei Ebenen nach oben springen, um zu mathematics/ zu gelangen
+integral = { path = "../../mathematics/numerics/integral" }
+core_io = { path = "../../core_io", features = ["pdf"] }
