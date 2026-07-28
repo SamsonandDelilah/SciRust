@@ -1,29 +1,36 @@
-// mathematics/math_constants.rs
-
-/// 1. Pros and Cons analysis of centralizing mathematical constants in a dedicated module.
-/// 
-/// ## Pro
-/// * **Single Source of Truth:** Central definition prevents magic numbers and duplication across crates (e.g., geometry, integration, symbolic).
-/// * **Maintainability & Consistency:** Changing precision or switching to custom numeric types (like Bigfloat / `pln4`) only requires updates in one file.
-/// * **Readability:** Clear, domain-specific names (`MathConstants::PI`) improve code clarity over scattered `std::f64::consts::PI`.
-/// * **Extensibility:** The `#[non_exhaustive]` attribute allows adding custom constants later without breaking downstream code.
-/// 
-/// ## Con
-/// * **Minor Indirection:** Requires importing or referencing the constants module, adding a slight verbosity compared to standard library constants.
-/// * **Namespace Pollution Risk:** If imported globally via `use MathConstants::*;`, it can occasionally cause naming collisions with local variables.
-/// ## Architectural Alignment
-/// * **Enforcing Explicit Scope:** Rejecting glob imports (`use MathConstants::*;`) and requiring explicit qualification (`MathConstants::PI`) prevents namespace pollution.
-/// * **Code Clarity:** Explicit prefixes make the origin of numerical constants unambiguous, aligning with strict software engineering practices in high-precision scientific computing libraries like SciRust.
-/// 
 //! # Mathematical Constants Module
 //! 
 //! Central repository for fundamental mathematical constants used across the SciRust workspace.
 
-/// 1. Central mathematical constants container with explicit scoping enforcement.
-#[non_exhaustive]
-pub struct MathConstants;
+/// Zentraler Container für mathematische Konstanten mit Scoping-Erzwingung.
+pub struct MathConstants {
+    // Verhindert das Erstellen der Struktur außerhalb dieser Datei vollständig
+    _private: (), 
+}
 
 impl MathConstants {
+    // =========================================================================
+    // Machine Constants 
+    // =========================================================================
+
+    pub const MACHINE_EPS_F64: f64 = f64::EPSILON;
+    pub const MACHINE_EPS_F32: f32 = f32::EPSILON;
+    pub const MAX_U128: u128 = u128::MAX;
+    pub const MAX_I128: i128 = i128::MAX;
+    pub const MIN_I128: i128 = i128::MIN;
+    pub const MAX_U64: u64 = u64::MAX;
+    pub const MAX_I64: i64 = i64::MAX;
+    pub const MIN_I64: i64 = i64::MIN;
+    pub const MAX_U32: u32 = u32::MAX; // Korrigiert
+    pub const MAX_I32: i32 = i32::MAX; // Korrigiert
+    pub const MIN_I32: i32 = i32::MIN; // Korrigiert
+
+    // =========================================================================
+    // Minimal Tolerance
+    // =========================================================================
+    pub const MIN_ABSTOL_F64: f64 = Self::MACHINE_EPS_F64 * 0.001;
+    pub const MIN_RELTOL_F64: f64 = Self::MACHINE_EPS_F64 * 0.001;
+
     // =========================================================================
     // Fundamental Constants
     // =========================================================================
@@ -38,7 +45,7 @@ impl MathConstants {
     pub const SQRT_2: f64 = std::f64::consts::SQRT_2;
 
     /// Square root of 3 ($\sqrt{3}$).
-    pub const SQRT_3: f64 = std::f64::consts::SQRT_3;
+    pub const SQRT_3: f64 = 1.732_050_807_568_877_293_527_446_341_505_9;
 
     /// Inverse square root of 2 ($1 / \sqrt{2}$).
     pub const FRAC_1_SQRT_2: f64 = std::f64::consts::FRAC_1_SQRT_2;
@@ -73,7 +80,7 @@ impl MathConstants {
     pub const FRAC_PI_4: f64 = std::f64::consts::FRAC_PI_4;
 
     /// Two times Pi ($2\pi$).
-    pub const TAU: f64 = std::f64::consts::TAU;
+    pub const TWO_PI: f64 = std::f64::consts::TAU;
 
     // =========================================================================
     // Conversion Factors
