@@ -172,6 +172,8 @@ $$\frac{B_\lambda(\lambda,T)}{B_\nu(\nu,T) \cdot c/\lambda^2} \approx 1,\quad \l
 The comparison results are all perfect within type definitions (mpmath, f64).
 
 ---
+## Tags / Keywords: rust, optics, physics, blackbody, planck
+---
 
 ## References and Sources
 
